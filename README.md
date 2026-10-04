@@ -39,3 +39,4 @@ Configure `MAIL_*` in `.env` so login links can be sent (locally, `MAIL_MAILER=l
 ```sh
 php artisan test
 ```
+# notes-app
