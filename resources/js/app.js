@@ -1,5 +1,4 @@
 import 'trix';
-import 'trix/dist/trix.css';
 
 // Notes are text-only: no file/image attachments. Hide the paperclip
 // button and refuse anything dropped or pasted as a file.

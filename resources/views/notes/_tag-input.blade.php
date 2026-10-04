@@ -13,13 +13,13 @@
     x-data="tagInput(@js($initial), @js($available))"
     x-on:{{ $reset }}.window="setTags($event.detail?.tags)"
     x-on:flush-tags.window="addTag()"
-    class="flex flex-wrap items-center gap-1.5 min-h-8"
+    class="flex flex-wrap items-center gap-2 min-h-8"
 >
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 text-gray-400 shrink-0" aria-hidden="true">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 text-gray-300 dark:text-gray-600 shrink-0" aria-hidden="true">
         <path fill-rule="evenodd" d="M4.5 2A2.5 2.5 0 0 0 2 4.5v3.879a2.5 2.5 0 0 0 .732 1.767l7.5 7.5a2.5 2.5 0 0 0 3.536 0l3.878-3.878a2.5 2.5 0 0 0 0-3.536l-7.5-7.5A2.5 2.5 0 0 0 8.38 2H4.5ZM5 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd"/>
     </svg>
     <template x-for="(tag, index) in tags" :key="tag">
-        <span class="inline-flex items-center gap-1 text-xs pl-2 pr-1 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200">
+        <span class="inline-flex items-center gap-1 text-xs pl-2.5 pr-1.5 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200">
             <span x-text="tag"></span>
             <button type="button" @click="removeTag(index)" class="text-gray-400 hover:text-gray-700 dark:hover:text-gray-100" aria-label="Remove tag">&times;</button>
         </span>
@@ -43,13 +43,13 @@
         <ul
             x-show="suggestions.length > 0"
             x-cloak
-            class="absolute z-50 bottom-full mb-1 w-48 max-h-40 overflow-auto rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg text-sm"
+            class="absolute z-50 bottom-full mb-2 w-52 max-h-48 overflow-auto rounded-xl py-1 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg text-sm"
         >
             <template x-for="(name, i) in suggestions" :key="name">
                 <li
                     @mousedown.prevent="addTag(name)"
                     :class="i === highlightedIndex ? 'bg-gray-100 dark:bg-gray-700' : ''"
-                    class="px-3 py-1.5 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200"
+                    class="px-3.5 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200"
                     x-text="name"
                 ></li>
             </template>

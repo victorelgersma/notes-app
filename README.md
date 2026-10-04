@@ -7,10 +7,10 @@ Built on the same stack as Bookmarks (Laravel 13 + SQLite + Tailwind + Alpine, s
 
 - **Take a note…** at the top expands into a composer: title, a rich-text body (Trix editor:
   bold, italic, strikethrough, links, heading, quote, code, bullet/numbered lists) and tags.
-  **Close** saves it. Empty notes are discarded.
+  **Done** saves it. Empty notes are discarded.
 - **Tags sidebar**: click a tag to see only its notes. While a tag is selected, a new note gets
   that tag automatically, and you can still remove it or add others before closing.
-- **Click a note** to open it in an editor. Closing it (Close, Esc, or clicking outside) saves
+- **Click a note** to open it in an editor. Closing it (Done, Esc, or clicking outside) saves
   your changes, and nothing is sent if you didn't change anything. The bin icon deletes it.
 - Tags that no longer have any notes are removed, so the sidebar stays tidy.
 - Search in the top bar filters as you type (title, body text and tags).
@@ -40,3 +40,4 @@ Configure `MAIL_*` in `.env` so login links can be sent (locally, `MAIL_MAILER=l
 php artisan test
 ```
 # notes-app
+

@@ -26,7 +26,7 @@
     <aside
         :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
         class="fixed top-16 bottom-0 left-0 z-20 w-64 bg-white dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800 transition-transform
-               lg:translate-x-0 lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] lg:border-r-0 shrink-0 overflow-y-auto py-3 pr-3"
+               lg:translate-x-0 lg:sticky lg:self-start lg:top-16 lg:h-[calc(100vh-4rem)] lg:border-r-0 shrink-0 overflow-y-auto py-3 pr-3"
     >
         <a href="{{ route('notes.index') }}" class="{{ $navItem }} {{ $activeTag ? $navIdle : $navActive }}">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 shrink-0 opacity-70">
@@ -122,18 +122,18 @@
     })"
 >
     {{-- ---------- Composer: "Take a note…" ---------- --}}
-    <div class="max-w-xl mx-auto mb-10" @click.outside="if (composerOpen && !editing) closeComposer()">
+    <div class="max-w-2xl mx-auto mb-12" @click.outside="if (composerOpen && !editing) closeComposer()">
         <div
             x-show="!composerOpen"
             @click="openComposer()"
             @keydown.enter.prevent="openComposer()"
             tabindex="0"
             role="button"
-            class="flex items-center gap-3 px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-md cursor-text text-gray-500 dark:text-gray-400 transition-shadow focus:outline-none focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100"
+            class="flex items-center gap-3 px-6 py-4 rounded-2xl bg-white dark:bg-gray-900 ring-1 ring-gray-200 dark:ring-gray-800 shadow-sm hover:shadow-md hover:ring-gray-300 dark:hover:ring-gray-700 cursor-text text-[15px] text-gray-500 dark:text-gray-400 transition focus:outline-none focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100"
         >
             <span class="flex-1">Take a note…</span>
             @if ($activeTag)
-                <span class="text-xs px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300">{{ $activeTag->name }}</span>
+                <span class="text-xs px-2.5 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300">{{ $activeTag->name }}</span>
             @endif
         </div>
 
@@ -143,12 +143,12 @@
             x-ref="composerForm"
             method="POST"
             action="{{ route('notes.store') }}"
-            class="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-lg"
+            class="rounded-2xl bg-white dark:bg-gray-900 ring-1 ring-gray-200 dark:ring-gray-800 shadow-xl shadow-gray-900/5 dark:shadow-black/40"
         >
             @csrf
             <input type="hidden" name="return_tag" value="{{ $activeTag?->name }}">
 
-            <div class="px-4 pt-3">
+            <div class="px-6 pt-5">
                 <input
                     type="text"
                     name="title"
@@ -157,39 +157,39 @@
                     maxlength="255"
                     autocomplete="off"
                     @keydown.enter.prevent="$refs.composerEditor.focus()"
-                    class="w-full bg-transparent border-0 p-0 text-base font-semibold focus:ring-0 outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600"
+                    class="w-full bg-transparent border-0 p-0 text-lg font-semibold tracking-tight focus:ring-0 outline-none placeholder:text-gray-300 dark:placeholder:text-gray-600"
                 >
             </div>
 
-            <div class="px-4 pt-2">
+            <div class="px-6 pt-2.5">
                 <input type="hidden" name="body" id="composer-body">
                 <trix-editor
                     x-ref="composerEditor"
                     input="composer-body"
                     toolbar="composer-toolbar"
                     placeholder="Take a note…"
-                    class="note-content text-sm"
+                    class="note-content text-[15px] text-gray-800 dark:text-gray-200 min-h-[5.5rem]"
                 ></trix-editor>
             </div>
 
-            <div class="px-4 pt-3">
+            <div class="px-6 pt-4 pb-4">
                 @include('notes._tag-input', ['initial' => $initialTags, 'available' => $tagNames, 'reset' => 'composer-reset'])
             </div>
 
-            <div class="flex items-center gap-2 px-2 py-2 mt-2 border-t border-gray-100 dark:border-gray-800">
+            <div class="flex items-center gap-3 pl-3 pr-3 py-2.5 border-t border-gray-100 dark:border-gray-800">
                 <trix-toolbar id="composer-toolbar" class="flex-1 min-w-0"></trix-toolbar>
                 <button
                     type="button"
                     @click="closeComposer()"
-                    class="shrink-0 text-sm font-medium px-4 py-1.5 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+                    class="shrink-0 text-sm font-medium px-5 py-2 rounded-full bg-gray-900 text-white hover:bg-gray-700 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white transition-colors"
                 >
-                    Close
+                    Done
                 </button>
             </div>
         </form>
 
         @if ($errors->any())
-            <p class="mt-2 text-sm text-red-600">{{ $errors->first() }}</p>
+            <p class="mt-3 px-2 text-sm text-red-600">{{ $errors->first() }}</p>
         @endif
     </div>
 
@@ -216,7 +216,7 @@
             No notes match “<span x-text="search"></span>”.
         </div>
 
-        <div class="max-w-6xl mx-auto columns-1 sm:columns-2 lg:columns-3 2xl:columns-4 gap-4">
+        <div class="max-w-6xl mx-auto columns-1 sm:columns-2 lg:columns-3 2xl:columns-4 gap-5">
             @foreach ($notes as $note)
                 @include('notes._card', ['note' => $note])
             @endforeach
@@ -227,23 +227,35 @@
     <div
         x-show="editing"
         x-cloak
-        x-transition.opacity.duration.150ms
+        x-transition.opacity.duration.200ms
+        x-effect="document.documentElement.classList.toggle('overflow-hidden', !!editing)"
         @click.self="closeNote()"
-        class="fixed inset-0 z-40 bg-black/40 flex items-start justify-center p-4 pt-[8vh]"
+        class="fixed inset-0 z-40 flex items-stretch sm:items-start justify-center sm:p-6 sm:pt-[6vh] bg-gray-950/25 dark:bg-black/60 backdrop-blur-[3px]"
         role="dialog"
         aria-modal="true"
+        aria-label="Edit note"
     >
         <form
+            x-show="editing"
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 translate-y-3 sm:scale-[0.98]"
+            x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
             x-ref="editForm"
             method="POST"
             :action="editing ? updateUrl.replace('__ID__', editing.id) : ''"
-            class="w-full max-w-2xl max-h-[84vh] flex flex-col rounded-xl bg-white dark:bg-gray-900 shadow-2xl border border-gray-200 dark:border-gray-800"
+            class="w-full sm:max-w-3xl h-full sm:h-auto sm:max-h-[88vh] flex flex-col bg-white dark:bg-gray-900 sm:rounded-2xl shadow-2xl shadow-gray-900/20 sm:ring-1 ring-gray-200 dark:ring-gray-800"
         >
             @csrf
             @method('PUT')
             <input type="hidden" name="return_tag" value="{{ $activeTag?->name }}">
 
-            <div class="px-5 pt-4">
+            {{-- Formatting bar --}}
+            <div class="shrink-0 px-3 sm:px-5 py-2 border-b border-gray-100 dark:border-gray-800">
+                <trix-toolbar id="edit-toolbar"></trix-toolbar>
+            </div>
+
+            {{-- Writing area --}}
+            <div class="flex-1 overflow-y-auto px-6 sm:px-14 pt-8 sm:pt-12 pb-10">
                 <input
                     type="text"
                     name="title"
@@ -252,50 +264,52 @@
                     maxlength="255"
                     autocomplete="off"
                     @keydown.enter.prevent="$refs.editEditor.focus()"
-                    class="w-full bg-transparent border-0 p-0 text-lg font-semibold focus:ring-0 outline-none placeholder:text-gray-400 dark:placeholder:text-gray-600"
+                    class="w-full bg-transparent border-0 p-0 text-2xl sm:text-[1.75rem] leading-tight font-semibold tracking-tight focus:ring-0 outline-none placeholder:text-gray-300 dark:placeholder:text-gray-600"
                 >
-            </div>
 
-            <div class="px-5 pt-2 flex-1 overflow-y-auto">
                 <input type="hidden" name="body" id="edit-body">
                 <trix-editor
                     x-ref="editEditor"
                     input="edit-body"
                     toolbar="edit-toolbar"
-                    placeholder="Note"
-                    class="note-content min-h-[8rem]"
+                    placeholder="Start writing…"
+                    class="note-content mt-5 text-base sm:text-[1.0625rem] text-gray-800 dark:text-gray-200 min-h-[16rem]"
                 ></trix-editor>
             </div>
 
-            <div class="px-5 pt-3">
-                @include('notes._tag-input', ['initial' => [], 'available' => $tagNames, 'reset' => 'note-opened'])
-            </div>
+            {{-- Tags + actions --}}
+            <div class="shrink-0 border-t border-gray-100 dark:border-gray-800">
+                <div class="px-6 sm:px-14 pt-4 pb-3">
+                    @include('notes._tag-input', ['initial' => [], 'available' => $tagNames, 'reset' => 'note-opened'])
+                </div>
 
-            <p class="px-5 pt-2 text-right text-xs text-gray-400 dark:text-gray-600" x-text="editing ? 'Edited ' + editing.edited : ''"></p>
+                <div class="flex items-center gap-2 px-4 sm:px-6 pb-4 pt-1">
+                    <p class="flex-1 pl-2 sm:pl-8 text-xs text-gray-400 dark:text-gray-500" x-text="editing ? 'Edited ' + editing.edited : ''"></p>
 
-            <div class="flex items-center gap-1 px-2 py-2 mt-1 border-t border-gray-100 dark:border-gray-800">
-                <trix-toolbar id="edit-toolbar" class="flex-1 min-w-0"></trix-toolbar>
-                <button
-                    type="submit"
-                    form="delete-note-form"
-                    title="Delete note"
-                    class="shrink-0 p-2 rounded-md text-gray-400 hover:text-red-600 hover:bg-gray-100 dark:hover:bg-gray-800"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
-                        <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 0 0 6 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 1 0 .23 1.482l.149-.022.841 10.518A2.75 2.75 0 0 0 7.596 19h4.807a2.75 2.75 0 0 0 2.742-2.53l.841-10.52.149.023a.75.75 0 0 0 .23-1.482A41.03 41.03 0 0 0 14 4.193V3.75A2.75 2.75 0 0 0 11.25 1h-2.5ZM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4ZM8.58 7.72a.75.75 0 0 0-1.5.06l.3 7.5a.75.75 0 1 0 1.5-.06l-.3-7.5Zm4.34.06a.75.75 0 1 0-1.5-.06l-.3 7.5a.75.75 0 1 0 1.5.06l.3-7.5Z" clip-rule="evenodd"/>
-                    </svg>
-                </button>
-                <button
-                    type="button"
-                    @click="closeNote()"
-                    class="shrink-0 text-sm font-medium px-4 py-1.5 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-                >
-                    Close
-                </button>
+                    <button
+                        type="submit"
+                        form="delete-note-form"
+                        title="Delete note"
+                        class="inline-flex items-center gap-1.5 text-sm px-3 py-2 rounded-full text-gray-500 hover:text-red-600 hover:bg-red-50 dark:text-gray-400 dark:hover:text-red-400 dark:hover:bg-red-950/40 transition-colors"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+                            <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 0 0 6 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 1 0 .23 1.482l.149-.022.841 10.518A2.75 2.75 0 0 0 7.596 19h4.807a2.75 2.75 0 0 0 2.742-2.53l.841-10.52.149.023a.75.75 0 0 0 .23-1.482A41.03 41.03 0 0 0 14 4.193V3.75A2.75 2.75 0 0 0 11.25 1h-2.5ZM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4ZM8.58 7.72a.75.75 0 0 0-1.5.06l.3 7.5a.75.75 0 1 0 1.5-.06l-.3-7.5Zm4.34.06a.75.75 0 1 0-1.5-.06l-.3 7.5a.75.75 0 1 0 1.5.06l.3-7.5Z" clip-rule="evenodd"/>
+                        </svg>
+                        <span class="hidden sm:inline">Delete</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        @click="closeNote()"
+                        class="text-sm font-medium px-5 py-2 rounded-full bg-gray-900 text-white hover:bg-gray-700 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white transition-colors"
+                    >
+                        Done
+                    </button>
+                </div>
             </div>
         </form>
 
-        {{-- Lives outside the edit form (forms can't nest); the trash
+        {{-- Lives outside the edit form (forms can't nest); the Delete
              button above submits it via form="delete-note-form". --}}
         <form
             id="delete-note-form"
@@ -449,3 +463,4 @@
     };
 </script>
 @endpush
+

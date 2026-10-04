@@ -17,10 +17,10 @@
     tabindex="0"
     @click="if (!$event.target.closest('a')) openNote(note)"
     @keydown.enter.self="openNote(note)"
-    class="break-inside-avoid mb-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 py-3 cursor-default transition-shadow hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100"
+    class="break-inside-avoid mb-5 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-5 py-4 cursor-default transition-shadow hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100"
 >
     @if ($note->title)
-        <h2 class="font-semibold leading-snug break-words mb-1">{{ $note->title }}</h2>
+        <h2 class="font-semibold leading-snug tracking-tight break-words mb-1.5">{{ $note->title }}</h2>
     @endif
 
     @if ($note->body)
