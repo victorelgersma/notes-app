@@ -39,16 +39,68 @@
         <p class="mt-5 mb-1 pl-6 text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-gray-600">Tags</p>
 
         @forelse ($tags as $tag)
-            <a
-                href="{{ route('notes.index', ['tag' => $tag->name]) }}"
-                class="{{ $navItem }} {{ $activeTag?->is($tag) ? $navActive : $navIdle }}"
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 shrink-0 opacity-70">
-                    <path fill-rule="evenodd" d="M4.5 2A2.5 2.5 0 0 0 2 4.5v3.879a2.5 2.5 0 0 0 .732 1.767l7.5 7.5a2.5 2.5 0 0 0 3.536 0l3.878-3.878a2.5 2.5 0 0 0 0-3.536l-7.5-7.5A2.5 2.5 0 0 0 8.38 2H4.5ZM5 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd"/>
-                </svg>
-                <span class="flex-1 truncate">{{ $tag->name }}</span>
-                <span class="text-xs tabular-nums opacity-60">{{ $tag->notes_count }}</span>
-            </a>
+            <div x-data="{ renaming: false }" class="group relative">
+                <a
+                    x-show="!renaming"
+                    href="{{ route('notes.index', ['tag' => $tag->name]) }}"
+                    class="{{ $navItem }} {{ $activeTag?->is($tag) ? $navActive : $navIdle }}"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 shrink-0 opacity-70">
+                        <path fill-rule="evenodd" d="M4.5 2A2.5 2.5 0 0 0 2 4.5v3.879a2.5 2.5 0 0 0 .732 1.767l7.5 7.5a2.5 2.5 0 0 0 3.536 0l3.878-3.878a2.5 2.5 0 0 0 0-3.536l-7.5-7.5A2.5 2.5 0 0 0 8.38 2H4.5ZM5 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd"/>
+                    </svg>
+                    <span class="flex-1 truncate">{{ $tag->name }}</span>
+                    {{-- The count makes way for the rename button on hover. --}}
+                    <span class="w-6 text-right text-xs tabular-nums opacity-60 group-hover:invisible group-focus-within:invisible">{{ $tag->notes_count }}</span>
+                </a>
+
+                <button
+                    x-show="!renaming"
+                    type="button"
+                    title="Rename tag"
+                    aria-label="Rename tag {{ $tag->name }}"
+                    @click="renaming = true; $nextTick(() => { $refs.name.focus(); $refs.name.select(); })"
+                    class="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-md opacity-0 group-hover:opacity-100 focus:opacity-100
+                           {{ $activeTag?->is($tag) ? 'text-white dark:text-gray-900 hover:bg-white/15 dark:hover:bg-black/10' : 'text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-800' }}"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+                        <path d="m2.695 14.762-1.262 3.155a.5.5 0 0 0 .65.65l3.155-1.262a4 4 0 0 0 1.343-.886L17.5 5.501a2.121 2.121 0 0 0-3-3L3.58 13.419a4 4 0 0 0-.885 1.343Z"/>
+                    </svg>
+                </button>
+
+                {{-- Enter or clicking away saves; Escape backs out. --}}
+                <form
+                    x-show="renaming"
+                    x-cloak
+                    x-ref="renameForm"
+                    method="POST"
+                    action="{{ route('tags.update', $tag) }}"
+                    class="flex items-center gap-3 pl-6 pr-4 py-1.5"
+                >
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="return_tag" value="{{ $activeTag?->name }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 shrink-0 opacity-70">
+                        <path fill-rule="evenodd" d="M4.5 2A2.5 2.5 0 0 0 2 4.5v3.879a2.5 2.5 0 0 0 .732 1.767l7.5 7.5a2.5 2.5 0 0 0 3.536 0l3.878-3.878a2.5 2.5 0 0 0 0-3.536l-7.5-7.5A2.5 2.5 0 0 0 8.38 2H4.5ZM5 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd"/>
+                    </svg>
+                    <input
+                        type="text"
+                        name="name"
+                        x-ref="name"
+                        value="{{ $tag->name }}"
+                        maxlength="255"
+                        autocomplete="off"
+                        aria-label="Tag name"
+                        @keydown.enter.prevent="$el.blur()"
+                        @keydown.escape.stop="$el.value = $el.defaultValue; renaming = false"
+                        @blur="
+                            const name = $el.value.trim().toLowerCase();
+                            if (renaming && name !== '' && name !== $el.defaultValue) $refs.renameForm.submit();
+                            else { $el.value = $el.defaultValue; renaming = false; }
+                        "
+                        class="flex-1 min-w-0 bg-transparent border-0 border-b border-gray-400 dark:border-gray-600 px-0 py-1 text-sm focus:ring-0 focus:border-gray-900 dark:focus:border-gray-100 outline-none"
+                    >
+                </form>
+            </div>
         @empty
             <p class="pl-6 pr-2 py-2 text-sm text-gray-400 dark:text-gray-600">
                 Tags you add to notes show up here.
@@ -267,7 +319,7 @@
             x-transition.opacity.duration.300ms
             class="fixed bottom-5 left-5 z-50 px-4 py-2.5 rounded-lg bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900 text-sm shadow-lg"
         >
-            {{ ['note-saved' => 'Note saved', 'note-updated' => 'Note updated', 'note-deleted' => 'Note deleted'][session('status')] ?? 'Done' }}
+            {{ ['note-saved' => 'Note saved', 'note-updated' => 'Note updated', 'note-deleted' => 'Note deleted', 'tag-renamed' => 'Tag renamed'][session('status')] ?? 'Done' }}
         </div>
     @endif
 </div>
